@@ -105,6 +105,13 @@ var pos4;
 var pos5;
 var pos6;
 
+let font;
+let fSize;
+let msg;
+let pts = [];
+let path;
+let points;
+
 /*
   Here we are trying to get access to the camera.
 */
@@ -124,11 +131,42 @@ function initCaptureDevice() {
 }
 
 function preload() {
-
+  //font = loadFont("../AdobeClean-Bold.otf");
 }
 
 function setup() {
-  createCanvas(640, 480); // we need some space...
+  createCanvas(window.innerWidth, window.innerHeight); // we need some space...
+
+
+  opentype.load("../AdobeClean-Bold.otf", function (err, f){
+    if(err){
+      alert("Font could not be loaded: " + err);
+    } else{
+      font = f;
+      console.log("font ready");
+
+      fSize = 256;
+      msg = "Pointer";
+      let x = 60;
+      let y = 300;
+      path = font.getPath(msg, x, y, fSize);
+      points = path.commands;
+      print(points);
+      console.log(path.commands);
+    }
+  })
+  /*
+  fSize = 256;
+  textFont(font);
+  textSize(fSize);
+  msg = "point";
+  pts = font.textToPoints(msg, 0, 0, fSize, {
+    sampleFactor: 0.1,
+    simplifyThreshold: 0.0
+  })
+  console.log(pts);
+  */
+
   initCaptureDevice(); // and access to the camera
 
   /*
@@ -147,7 +185,7 @@ function setup() {
     (float). Typical values of this variable are in the range between ~0.9 and
     ~0.98.
   */
-  myVida.imageFilterFeedback = 0.7;
+  myVida.imageFilterFeedback = 0.8;
   /*
     The value of the threshold for the procedure that calculates the threshold
     image. The value should be in the range from 0.0 to 1.0 (float).
@@ -230,7 +268,48 @@ function setup() {
 
 function draw() {
   if(myCapture !== null && myCapture !== undefined) { // safety first
-    background(0, 255, 255);
+
+    if(!font) return;
+
+    background(255, 255, 255);
+    //noFill();
+    //stroke(0);
+/*
+    for(let cmd of path.commands){
+      if(cmd.type === "M"){
+        beginShape();
+        vertex(cmd.x, cmd.y);
+      } else if(cmd.type === "L"){
+        vertex(cmd.x, cmd.y);
+      } else if(cmd.type === "C"){
+        bezierVertex(cmd.x1, cmd.y1, cmd.x2, cmd.y2, cmd.x, cmd.y);
+      } else if(cmd.type === "Q"){
+        quadraticVertex(cmd.x1, cmd.y1, cmd.x, cmd.y);
+      } else if(cmd.type === "Z"){
+        endShape(CLOSE);
+      }
+    }
+*/
+
+    //per creare una scritta e connettere i punti al passagio del mouse
+    fill(0);
+    beginShape();
+    for (var c = 0; c < points.length; c++){ // loop through the points
+      var cmd = points[c]; // get the drawing command
+    if (cmd.type === "M"){ // a move - so close current shape and start new
+      endShape();
+      beginShape();
+    } else {
+      mdist = dist(mouseX,mouseY,cmd.x , cmd.y);
+       if (mdist < 100){
+         vertex(cmd.x, cmd.y);
+       } else {
+       ellipse(cmd.x, cmd.y, 5, 5);
+       }
+    }
+
+    }
+    endShape();
 
     /*
       Call VIDA update function, to which we pass the current video frame as a
@@ -245,7 +324,7 @@ function draw() {
     //image(myVida.currentImage, 0, 0);
     //image(myVida.backgroundImage, 320, 0);
     //image(myVida.differenceImage, 0, 240);
-    image(myVida.thresholdImage, 0, 0);
+    image(myVida.thresholdImage, width/2 - 370, height/2 - 240);
     // let's also describe the displayed images
     //noStroke(); fill(255, 255, 255);
     //text('camera', 20, 20);
@@ -264,7 +343,6 @@ function draw() {
         [your vida object].drawActiveZones(0, 0, width, height);
     */
     myVida.drawActiveZones(0, 0, width, height);
-
   }
   else {
     /*
@@ -274,70 +352,36 @@ function draw() {
     */
     background(255, 0, 0);
   }
-  //console.log(letter
+
   textSize(32);
+  fill(0,0,255);
   if(pos0){
-    fill(255,255,255);
     //rect(10,10,20,50);
-    text("--",50,height/2,);
+    text("--",width/8,height/2,);
   }
-  /*if(pos0 == false){
-    fill(0,0,0);
-    rect(10,10,20,50);
-  }*/
   if(pos1){
-    fill(255,255,255);
     //rect(40,10,20,50);
-    text("--",135,height/2,);
-  }
-  if(pos1 == false){
-    fill(0,0,0);
-    rect(40,10,20,50);
+    text("--",width/8 *2,height/2,);
   }
   if(pos2){
-    fill(255,255,255);
     //rect(70,10,20,50);
-    text("--",220,height/2,);
-  }
-  if(pos2 == false){
-    fill(0,0,0);
-    rect(70,10,20,50);
+    text("--",width/8 *3,height/2,);
   }
   if(pos3){
-    fill(255,255,255);
     //rect(100,10,20,50);
-    text("--",305,height/2,);
-  }
-  if(pos3 == false){
-    fill(0,0,0);
-    rect(100,10,20,50);
+    text("--",width/8 *4,height/2,);
   }
   if(pos4){
-    fill(255,255,255);
     //rect(130,10,20,50);
-    text("--",390,height/2,);
-  }
-  if(pos4 == false){
-    fill(0,0,0);
-    rect(130,10,20,50);
+    text("--",width/8 *5,height/2,);
   }
   if(pos5){
-    fill(255,255,255);
     //rect(160,10,20,50);
-    text("--",480,height/2,);
-  }
-  if(pos5 == false){
-    fill(0,0,0);
-    rect(160,10,20,50);
+    text("--",width/8 *6,height/2,);
   }
   if(pos6){
-    fill(255,255,255);
     //rect(190,10,20,50);
-    text("--",565,height/2,);
-  }
-  if(pos6 == false){
-    fill(0,0,0);
-    rect(190,10,20,50);
+    text("--",width/8 *7,height/2,);
   }
 }
 
@@ -456,4 +500,8 @@ function onActiveZoneChange(_vidaActiveZone) {
       pos6 = false;
     }
   }
+}
+
+function windowResized() {
+  resizeCanvas(windowWidth, windowHeight);
 }
