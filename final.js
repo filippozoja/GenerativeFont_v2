@@ -1,3 +1,6 @@
+//v2.1
+
+
 /*****************************************************************************\
 ********************************** V I D A ************************************
 *******************************************************************************
@@ -143,12 +146,12 @@ function setup() {
       (float). Typical values of this variable are in the range between ~0.9 and
       ~0.98.
     */
-    myVida.imageFilterFeedback = 0.6;
+    myVida.imageFilterFeedback = 0.5;
     /*
       The value of the threshold for the procedure that calculates the threshold
       image. The value should be in the range from 0.0 to 1.0 (float).
     */
-    myVida.imageFilterThreshold = 0.3;
+    myVida.imageFilterThreshold = 0.2;
     /*
       You may need a horizontal image flip when working with the video camera.
       If you need a different kind of mirror, here are the possibilities:
@@ -171,7 +174,7 @@ function setup() {
       must be exceeded to trigger the zone (so, higher the parameter value =
       lower the zone sensitivity).
     */
-    myVida.setActiveZonesNormFillThreshold(0.99);
+    myVida.setActiveZonesNormFillThreshold(0.7);
     /*
       Let's create several active zones. VIDA uses normalized (in the range from
       0.0 to 1.0) instead of pixel-based. Thanks to this, the position and size
@@ -179,7 +182,7 @@ function setup() {
       resolution.
     */
     var padding = 0.01;
-    var n = 9;
+    var n = 7;
     var zoneWidth = 0.12;
     var zoneHeight = 0.7;
     var hOffset = (1.0 - (n * zoneWidth + (n - 1) * padding)) / 2.0;
@@ -222,13 +225,13 @@ function setup() {
         //osc.start();
         //synth[i] = osc;
     }
-    frameRate(30); // set framerate
+    frameRate(15); // set framerate
 }
 
 function draw() {
     if (myCapture !== null && myCapture !== undefined) { // safety first
 
-        background(255, 255, 255);
+        background(0, 0, 0);
         /*
           Call VIDA update function, to which we pass the current video frame as a
           parameter. Usually this function is called in the draw loop (once per
@@ -242,7 +245,11 @@ function draw() {
         //image(myVida.currentImage, 0, 0);
         //image(myVida.backgroundImage, 320, 0);
         //image(myVida.differenceImage, 0, 240);
-        //image(myVida.thresholdImage, width / 2 - 370, height / 2 - 240);
+
+
+        image(myVida.thresholdImage, width / 2 - 370, height / 2 - 240);
+
+
         // let's also describe the displayed images
         //noStroke(); fill(255, 255, 255);
         //text('camera', 20, 20);
@@ -260,7 +267,7 @@ function draw() {
           surface, use the function in this way:
             [your vida object].drawActiveZones(0, 0, width, height);
         */
-        //myVida.drawActiveZones(0, 0, width, height);
+        myVida.drawActiveZones(0, 0, width, height);
     } else {
         /*
           If there are problems with the capture device (it's a simple mechanism so
@@ -328,7 +335,7 @@ function onActiveZoneChange(_vidaActiveZone) {
         case 7:
         case 8:
             let val = _vidaActiveZone.id;
-            wfont.style.setProperty('--peso', val * 100 + val);
+            wfont.style.setProperty('--peso', (val+1) * 100);
             //myrotate(0);
             break;
     }
