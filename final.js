@@ -336,7 +336,6 @@ function onActiveZoneChange(_vidaActiveZone) {
         case 8:
             let val = _vidaActiveZone.id;
             wfont.style.setProperty('--peso', (val+1) * 100);
-            //myrotate(0);
             break;
     }
 }
