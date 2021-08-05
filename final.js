@@ -267,7 +267,7 @@ function draw() {
           surface, use the function in this way:
             [your vida object].drawActiveZones(0, 0, width, height);
         */
-        myVida.drawActiveZones(0, 0, width, height);
+        //myVida.drawActiveZones(0, 0, width, height);
     } else {
         /*
           If there are problems with the capture device (it's a simple mechanism so
@@ -336,6 +336,7 @@ function onActiveZoneChange(_vidaActiveZone) {
         case 8:
             let val = _vidaActiveZone.id;
             wfont.style.setProperty('--peso', (val+1) * 100);
+            wfont.style.setProperty('--incl', -val *2 + "deg");
             break;
     }
 }
